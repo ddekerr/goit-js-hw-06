@@ -38,9 +38,8 @@ createBtn.addEventListener('click', function() {
 
   // reneder colection on HTML page
   const containerForBlocks = document.querySelector("#boxes");
-  for (const block of BlockGenerator.getBlocks()) {
-    containerForBlocks.append(block);
-  }
+  containerForBlocks.append(...block);
+
 });
 
 // event for destroy button
