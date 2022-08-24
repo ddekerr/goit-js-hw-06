@@ -3,7 +3,7 @@ const BlockGenerator = {
   blocks: [],
 
   setNumberOfBlocks(value) {
-    this.numberOfBlocks = value;
+    this.numberOfBlocks += Number(value);
   },
 
   // generate colection of blocks and push it to this.blocks
@@ -14,7 +14,7 @@ const BlockGenerator = {
       block.style.width = `${i * 10}px`;
       block.style.height = `${i * 10}px`;
       this.blocks.push(block);
-    }  
+    }
   },
 
   // clear colection blocks
@@ -38,14 +38,15 @@ createBtn.addEventListener('click', function() {
 
   // reneder colection on HTML page
   const containerForBlocks = document.querySelector("#boxes");
-  containerForBlocks.append(...block);
+  const blocks = BlockGenerator.getBlocks();
+  containerForBlocks.append(...blocks);
 
 });
 
 // event for destroy button
 const destroyBtn = document.querySelector('[data-destroy]');
 destroyBtn.addEventListener('click', function() {
-  // call method clear colection
+  // call method to clear colection
   BlockGenerator.destroyBoxes();
   // clear HTML page
   document.querySelector("#boxes").innerHTML = "";
