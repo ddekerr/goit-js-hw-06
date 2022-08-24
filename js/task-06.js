@@ -1,16 +1,9 @@
-const inputElement = document.querySelector('#validation-input');
+const input = document.querySelector('#validation-input');
 
 // event out of focus
-inputElement.addEventListener('blur', function() {
-
-  // length of input value
-  const valueLength = this.value.length;
-
-  // data-length atribute value
-  const datasetLength = Number(this.dataset.length);
-
+input.addEventListener('blur', function() {
   // add class according to the condition
-  if (valueLength === datasetLength) {
+  if (this.value.length === +this.dataset.length) {
     this.classList.remove('invalid');
     this.classList.add('valid');
   } else {
