@@ -1,56 +1,71 @@
-const BlockGenerator = {
-  numberOfBlocks: 0,
-  blocks: [],
+class BlockGenerator {
+  #numberOfBlocks;
+  #blocks;
+  #nextBlockSize;
 
-  setNumberOfBlocks(value) {
-    this.numberOfBlocks += Number(value);
-  },
+  constructor() {
+    this.#numberOfBlocks = 0;
+    this.#blocks = [];
+    this.#nextBlockSize = 30;
+  }
+
+  get blocks() {
+    return this.#blocks;
+  }
 
   // generate colection of blocks and push it to this.blocks
-  createBoxes() {
-    for (let i = 1; i <= this.numberOfBlocks; i++) {
-      const block = document.createElement('div');
-      block.style.backgroundColor = getRandomHexColor();
-      block.style.width = `${i * 10}px`;
-      block.style.height = `${i * 10}px`;
-      this.blocks.push(block);
+  createBoxes(value) {
+    for (let i = 1; i <= value; i+=1) {
+      const block = {
+        backgroundColor: getRandomHexColor(),
+        width: this.#nextBlockSize,
+        height: this.#nextBlockSize
+      };
+      this.#blocks.push(block);
+
+      this.#numberOfBlocks += 1;
+      this.#nextBlockSize += 10;
     }
-  },
+  }
 
-  // clear colection blocks
   destroyBoxes() {
-    this.blocks = [];
-  },
-
-  getBlocks() {
-    return this.blocks;
+    this.#numberOfBlocks = 0;
+    this.#blocks = [];
+    this.#nextBlockSize = 30;
   }
 }
 
-// event for create button
-const createBtn = document.querySelector('[data-create]');
-createBtn.addEventListener('click', function() {
+const refs = {
+  createBtn: document.querySelector('[data-create]'),
+  destroyBtn: document.querySelector('[data-destroy]'),
+  input: document.querySelector('input'),
+  boxContainer: document.querySelector('#boxes')
+}
 
+const blockGenerator = new BlockGenerator();
+
+refs.createBtn.addEventListener('click', function() {
   // set the number of blocks from input element and create collection
-  const inputValue = document.querySelector('input').value;
-  BlockGenerator.setNumberOfBlocks(inputValue);
-  BlockGenerator.createBoxes();
+  blockGenerator.createBoxes(refs.input.value);
 
-  // reneder colection on HTML page
-  const containerForBlocks = document.querySelector("#boxes");
-  const blocks = BlockGenerator.getBlocks();
-  containerForBlocks.append(...blocks);
-
+  const markup = generateMarkup(blockGenerator.blocks);
+  refs.boxContainer.innerHTML = markup
 });
 
-// event for destroy button
-const destroyBtn = document.querySelector('[data-destroy]');
-destroyBtn.addEventListener('click', function() {
-  // call method to clear colection
-  BlockGenerator.destroyBoxes();
-  // clear HTML page
-  document.querySelector("#boxes").innerHTML = "";
+refs.destroyBtn.addEventListener('click', function() {
+  blockGenerator.destroyBoxes();
+  refs.boxContainer.innerHTML = "";
 });
+
+function generateMarkup(blocks) {
+  return blocks.map(({backgroundColor, width, height}) => {
+    return `<div style="
+      background-color:${backgroundColor};
+      width:${width}px;
+      height:${height}px">
+    </div>`
+  }).join('');
+}
 
 function getRandomHexColor() {
   return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
