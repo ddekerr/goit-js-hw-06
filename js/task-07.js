@@ -1,9 +1,11 @@
-const inputElement = document.querySelector('#font-size-control');
+const range = document.querySelector('#font-size-control');
 const changedElement = document.querySelector('#text');
 // set start font-size of changedElement
-changedElement.style.fontSize = `${inputElement.value}px`;
+changeFontSize();
 
 // event change input element and set this valau to font-size changedElement
-inputElement.addEventListener('input', function(){
-  changedElement.style.fontSize = `${this.value}px`;
-});
+range.addEventListener('input', changeFontSize);
+
+function changeFontSize() {
+  changedElement.style.fontSize = `${range.value}px`;
+}
