@@ -1,51 +1,36 @@
-const formValidator = {
-  refs: {},
-
-  // set references
-  setRefs(email, password) {
-    this.refs.inputEmail = email;
-    this.refs.inputPassword = password;
-  },
-
-  // check fields for empty value
-  checkFields() {
-    const fields = Object.keys(this.refs);
-    for (const field of fields) {
-      if(this.refs[field].value === '')
-        return false;
-    }
-    return true;
-  },
-
-  // generate final object to log result
-  generateResultObject() {
-    const elements = {};
-    elements[this.refs.inputEmail.name] = this.refs.inputEmail.value;
-    elements[this.refs.inputPassword.name] = this.refs.inputPassword.value;
-    console.log(elements);
-  }
+const refs = {
+  inputEmail: document.querySelector('[name=email]'),
+  inputPassword: document.querySelector('[name=password]'),
+  form: document.querySelector(".login-form")
 }
 
-const form = document.querySelector(".login-form");
 // sumbit form event
-form.addEventListener('submit', function(event) {
+refs.form.addEventListener('submit', onSubmit);
+
+async function onSubmit(e) {
   // cansel form submit
-  event.preventDefault();
+  e.preventDefault();
+  await validation().then(generateResultObject)
+  refs.form.reset()
+}
 
-  // set object reference
-  const inputEmail = this.querySelector('[name=email]');
-  const inputPassword = this.querySelector('[name=password]');
-  formValidator.setRefs(inputEmail, inputPassword);
+// check fields for empty value
+function validation() {
+  const fields = [refs.inputEmail, refs.inputPassword];
+  return new Promise((resolve, reject) => {
+    if(fields.every(item => item.value !== '') ) {
+      resolve(true)
+    } else {
+      reject(false)
+    }
+  })
+}
 
-  // if form check validation generate finale result
-  // else alert error message
-  const validation = formValidator.checkFields();
-  if(validation) {
-    formValidator.generateResultObject();
-  } else {
-    alert("You have to fill all fields")
-  }
-
-  // clear form fields
-  this.reset();
-});
+// generate final object to log result
+function generateResultObject() {
+  const elements = {
+    email: refs.inputEmail.value,
+    password: refs.inputPassword.value
+  };
+  console.log(elements);
+}
